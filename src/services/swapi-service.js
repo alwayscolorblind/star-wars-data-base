@@ -38,9 +38,3 @@ export default class SwapiService {
         return this.getResource(`/starship/${id}`);
     }
 }
-
-const api = new SwapiService();
-
-api.getPlanet(2).then((result) => {
-    console.log(result);
-})
