@@ -10,35 +10,29 @@ export default class RandomPlanet extends Component {
     super(props);
 
     this.state = {
-      id: null,
-      name: null,
-      population: null,
-      rotationPeriod: null,
-      diameter: null
+      planet: {}
     }
 
     this.swapiService = new SwapiService();
 
+    this.onPlanetLoaded = this.onPlanetLoaded.bind(this);
+
     this.updatePlanet();
+  }
+
+  onPlanetLoaded(planet) {
+    this.setState({ planet });
   }
 
   updatePlanet() {
     const id = Math.floor(Math.random() * 20 + 2);
     this.swapiService
         .getPlanet(id)
-        .then(({ name, population, rotation_period, diameter}) => {
-          this.setState({
-            id,
-            name,
-            population,
-            rotationPeriod: rotation_period,
-            diameter
-          });
-        })
+        .then(this.onPlanetLoaded);
   }
 
   render() {
-    const { id, name, population, rotationPeriod, diameter } = this.state;
+    const { planet: { id, name, population, rotationPeriod, diameter } } = this.state;
 
     return (
       <div className="random-planet jumbotron rounded">

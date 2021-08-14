@@ -16,8 +16,9 @@ export default class SwapiService {
         return result.results;
     }
 
-    getPerson(id) {
-        return this.getResource(`/people/${id}`);
+    async getPerson(id) {
+        const person = await this.getResource(`/people/${id}`)
+        return this._transformPerson(person);
     }
 
     async getAllPlanets() {
@@ -25,8 +26,9 @@ export default class SwapiService {
         return result.results;
     }
 
-    getPlanet(id) {
-        return this.getResource(`/planets/${id}`);
+    async getPlanet(id) {
+        const planet = await this.getResource(`/planets/${id}`);
+        return this._transformPlanet(planet);
     }
 
     async getAllStarships() {
@@ -34,7 +36,47 @@ export default class SwapiService {
         return result.results;
     }
 
-    getStarship(id) {
-        return this.getResource(`/starship/${id}`);
+    async getStarship(id) {
+        const starship = await this.getResource(`/starship/${id}`);
+        return this._transformStarship(starship);
+    }
+
+    _exctractId(url) {
+        const idRegExp = /\/([0-9]*)\/$/;
+        return url.match(idRegExp)[1];
+    }
+
+    _transformPlanet({ url, name, population, rotation_period, diameter }) {
+        return {
+            id: this._exctractId(url),
+            name,
+            population,
+            rotationPeriod: rotation_period,
+            diameter
+        };
+    }
+
+    _transformStarship(starship) {
+        return {
+            id: this._exctractId(starship.url),
+            name: starship.name,
+            model: starship.model,
+            manufacturer: starship.manufacturer,
+            costInCredits: starship.costInCredits,
+            length: starship.length,
+            crew: starship.crew,
+            passengers: starship.passengers,
+            cargoCapacity: starship.cargoCapacity
+        };
+    }
+
+    _transformPerson({ url, name, gender, birt, eyeColor }) {
+        return {
+            id: this._exctractId(url),
+            name,
+            gender,
+            birthYear: birt,
+            eyeColor
+        };
     }
 }
