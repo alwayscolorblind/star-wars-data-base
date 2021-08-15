@@ -1,0 +1,22 @@
+.error-indicator {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-indicator .boom {
+    font-size: 24px;
+    font-weight: bold;
+    color: #f55e00;
+}
+
+.error-indicator .icon {
+    width: 5rem;
+    height: 5rem;
+    fill: #f55e00;
+}
+
+svg path {
+    fill: inherit;
+}
