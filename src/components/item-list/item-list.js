@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import './item-list.css';
-import SwapiService from "../../services/swapi-service";
 import ErrorIndicator from "../error-indicator";
 import Spinner from "../spinner";
 
@@ -15,8 +14,6 @@ export default class ItemList extends Component {
             loading: true,
             error: false
         };
-
-        this.swapiService = new SwapiService();
     }
 
     componentDidMount() {
@@ -39,20 +36,21 @@ export default class ItemList extends Component {
     }
 
     updateList = () => {
-        this.swapiService
-            .getAllPeople()
+        const getData = this.props.getData;
+        getData()
             .then(this.onLoaded)
             .catch(this.onError);
     }
 
     renderItems(list) {
         return list.map((item) => {
+            const label = this.props.renderItem(item);
+
             return (
                 <li className="list-group-item"
                     key={item.id}
-                    onClick={() => this.props.onItemSelected(item.id)}
-                >
-                    {item.name}
+                    onClick={() => this.props.onPersonSelected(item.id)} >
+                    {label}
                 </li>
             );
         });
