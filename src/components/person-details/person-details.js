@@ -35,6 +35,11 @@ export default class PersonDetails extends Component {
   };
 
   updatePerson = (id) => {
+    this.setState({
+      loading: true,
+      error: false
+    });
+
     this.swapiService
         .getPerson(id)
         .then(this.onLoaded)
