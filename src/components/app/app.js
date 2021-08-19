@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 
 import Header from '../header';
 import RandomPlanet from '../random-planet';
-import ItemList from '../item-list';
-import PersonDetails from '../person-details';
 
 import './app.css';
+import ErrorIndicator from "../error-indicator";
+import PeoplePage from "../people-page/people-page";
 
 
 class App extends Component {
@@ -13,32 +13,28 @@ class App extends Component {
         super(props);
 
         this.state = {
-            selectedItemId: null
+            hasError: false
         }
     }
 
-    onItemSelected = (id) => {
+    componentDidCatch() {
         this.setState({
-            selectedItemId: id
-        });
-    };
+            hasError: true
+        })
+    }
 
     render() {
-        const { selectedItemId } = this.state;
+        const { hasError } = this.state;
+
+        if (hasError) {
+            return <ErrorIndicator />
+        }
 
         return (
             <div>
                 <Header/>
                 <RandomPlanet/>
-
-                <div className="row mb2">
-                    <div className="col-md-6">
-                        <ItemList onItemSelected={this.onItemSelected}/>
-                    </div>
-                    <div className="col-md-6">
-                        <PersonDetails personId={selectedItemId}/>
-                    </div>
-                </div>
+                <PeoplePage />
             </div>
         );
     }
