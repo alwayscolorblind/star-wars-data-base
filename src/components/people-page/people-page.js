@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 
 import ItemList from "../item-list";
-import PersonDetails from "../person-details";
+import ItemDetails, {Record} from "../item-details";
+import Row from '../row';
+import ErrorBundle from "../error-bundle";
+
+import SwapiService from "../../services/swapi-service";
 
 import './people-page.css';
-import ErrorIndicator from "../error-indicator";
-import SwapiService from "../../services/swapi-service";
-import Row from '../row';
+
 
 class PeoplePage extends Component {
     constructor(props) {
@@ -14,44 +16,50 @@ class PeoplePage extends Component {
 
         this.state = {
             personId: null,
-            hasError: false
         };
 
         this.swapiService = new SwapiService();
     }
 
-    onPersonSelected = (id) => {
+    onPersonSelected = (personId) => {
         this.setState({
-            personId: id
+            personId
         });
     };
 
-    componentDidCatch() {
-        this.setState({
-            hasError: true
-        });
-    }
-
     render() {
-        if (this.state.hasError) {
-            return <ErrorIndicator />;
-        }
-
         const { personId } = this.state;
+
+        const {
+            getAllPeople,
+            getPerson,
+            getPersonImageURL
+        } = this.swapiService;
 
         const itemList = (
             <ItemList
-                onPersonSelected={this.onPersonSelected}
-                getData={this.swapiService.getAllPeople}
-                renderItem={({name, gender, birthYear}) => `${name} (${gender}, ${birthYear})`}
-            />
+                onItemSelected={this.onPersonSelected}
+                getData={getAllPeople}
+            >
+                {(item) => `${item.name} (${item.birthYear})`}
+            </ItemList>
         );
         const personDetails = (
-            <PersonDetails personId={personId} />
+            <ItemDetails
+                itemId={personId}
+                getData={getPerson}
+                getImageURL={getPersonImageURL}
+            >
+                <Record field={'gender'} label={'Gender'} />
+                <Record field={'birthYear'} label={'Birth Year'} />
+                <Record field={'eyeColor'} label={'Eye Color'} />
+            </ItemDetails>
         );
 
         return (
-            <Row left={itemList} right={personDetails} />
+            <ErrorBundle>
+                <Row left={itemList} right={personDetails} />
+            </ErrorBundle>
         );
     }
 }
