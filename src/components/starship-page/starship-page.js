@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 
 import Row from "../row"
-import ItemList from "../item-list";
 import ErrorBundle from "../error-bundle";
-import ItemDetails, {Record} from "../item-details";
-
-import SwapiService from "../../services/swapi-service";
+import {Record} from "../item-details";
+import {StarshipList, StarshipDetails} from "../sw-components";
 
 import "./starship-page.css";
+
 
 
 class StarshipPage extends Component {
@@ -17,8 +16,6 @@ class StarshipPage extends Component {
         this.state = {
             starshipId: null
         }
-
-        this.swapiService = new SwapiService();
     }
 
     onStarshipSelected = (starshipId) => {
@@ -30,27 +27,14 @@ class StarshipPage extends Component {
     render() {
         const { starshipId } = this.state;
 
-        const {
-            getAllStarships,
-            getStarship,
-            getStarshipImageURL
-        } = this.swapiService;
-
-        const itemList = (
-            <ItemList
-                onItemSelected={this.onStarshipSelected}
-                getData={getAllStarships}
-            >
-                {(item) => `${item.name}`}
-            </ItemList>
+        const starshipList = (
+          <StarshipList onItemSelected={this.onStarshipSelected}>
+              {({ name }) => `${name}`}
+          </StarshipList>
         );
 
         const starshipDetails = (
-            <ItemDetails
-                itemId={starshipId}
-                getData={getStarship}
-                getImageURL={getStarshipImageURL}
-            >
+            <StarshipDetails itemId={starshipId}>
                 <Record field={'model'} label={'Model'} />
                 <Record field={'manufacturer'} label={'Manufacturer'} />
                 <Record field={'costInCredits'} label={'Cost'} />
@@ -58,12 +42,12 @@ class StarshipPage extends Component {
                 <Record field={'crew'} label={'Crew'} />
                 <Record field={'passengers'} label={'Passengers'} />
                 <Record field={'cargoCapacity'} label={'cargoCapacity'} />
-            </ItemDetails>
+            </StarshipDetails>
         );
 
         return (
             <ErrorBundle>
-                <Row left={itemList} right={starshipDetails} />
+                <Row left={starshipList} right={starshipDetails} />
             </ErrorBundle>
         );
     }

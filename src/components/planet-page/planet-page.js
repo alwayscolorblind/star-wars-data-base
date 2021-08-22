@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 
-import SwapiService from "../../services/swapi-service";
-
 import Row from "../row";
-import ItemList from "../item-list";
-import ItemDetails, {Record} from "../item-details";
+import {Record} from "../item-details";
+import {PlanetDetails, PlanetList} from "../sw-components";
+import ErrorBundle from "../error-bundle";
 
 import './planet-page.css';
-import ErrorBundle from "../error-bundle";
+
 
 
 class PlanetPage extends Component {
@@ -17,8 +16,6 @@ class PlanetPage extends Component {
         this.state = {
             planetId: null
         };
-
-        this.swapiService = new SwapiService();
     }
 
     onPlanetSelected = (planetId) => {
@@ -30,32 +27,23 @@ class PlanetPage extends Component {
     render() {
         const { planetId } = this.state;
 
-        const { getAllPlanets, getPlanet, getPlanetImageURL} = this.swapiService;
-
-        const itemList = (
-            <ItemList
-                onItemSelected={this.onPlanetSelected}
-                getData={getAllPlanets}
-            >
-                {(item) => `${item.name}`}
-            </ItemList>
-        );
+        const planetList = (
+            <PlanetList onItemSelected={this.onPlanetSelected}>
+                {({ name }) => `${name}`}
+            </PlanetList>
+        )
 
         const planetDetails = (
-            <ItemDetails
-                itemId={planetId}
-                getData={getPlanet}
-                getImageURL={getPlanetImageURL}
-            >
+            <PlanetDetails itemId={planetId}>
                 <Record field={'population'} label={'Population'} />
                 <Record field={'rotationPeriod'} label={'Rotation Period'} />
                 <Record field={'diameter'} label={'Diameter'} />
-            </ItemDetails>
-        )
+            </PlanetDetails>
+        );
 
         return (
             <ErrorBundle>
-                <Row left={itemList} right={planetDetails} />
+                <Row left={planetList} right={planetDetails} />
             </ErrorBundle>
         );
     }

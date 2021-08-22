@@ -1,13 +1,12 @@
 import React, {Component} from 'react';
 
-import ItemList from "../item-list";
-import ItemDetails, {Record} from "../item-details";
+import {Record} from "../item-details";
 import Row from '../row';
 import ErrorBundle from "../error-bundle";
-
-import SwapiService from "../../services/swapi-service";
+import {PeopleList, PersonDetails} from "../sw-components";
 
 import './people-page.css';
+
 
 
 class PeoplePage extends Component {
@@ -17,8 +16,6 @@ class PeoplePage extends Component {
         this.state = {
             personId: null,
         };
-
-        this.swapiService = new SwapiService();
     }
 
     onPersonSelected = (personId) => {
@@ -30,35 +27,23 @@ class PeoplePage extends Component {
     render() {
         const { personId } = this.state;
 
-        const {
-            getAllPeople,
-            getPerson,
-            getPersonImageURL
-        } = this.swapiService;
-
-        const itemList = (
-            <ItemList
-                onItemSelected={this.onPersonSelected}
-                getData={getAllPeople}
-            >
-                {(item) => `${item.name} (${item.birthYear})`}
-            </ItemList>
+        const peopleList = (
+            <PeopleList onItemSelected={this.onPersonSelected}>
+                {({ name }) => `${name}`}
+            </PeopleList>
         );
+
         const personDetails = (
-            <ItemDetails
-                itemId={personId}
-                getData={getPerson}
-                getImageURL={getPersonImageURL}
-            >
+            <PersonDetails itemId={personId}>
                 <Record field={'gender'} label={'Gender'} />
                 <Record field={'birthYear'} label={'Birth Year'} />
                 <Record field={'eyeColor'} label={'Eye Color'} />
-            </ItemDetails>
+            </PersonDetails>
         );
 
         return (
             <ErrorBundle>
-                <Row left={itemList} right={personDetails} />
+                <Row right={personDetails} left={peopleList}/>
             </ErrorBundle>
         );
     }
