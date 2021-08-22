@@ -1,8 +1,4 @@
-import React, { Component } from 'react';
-
-import SwapiService from "../../services/swapi-service";
-import ErrorIndicator from "../error-indicator";
-import Spinner from "../spinner";
+import React from 'react';
 
 import './item-details.css';
 
@@ -15,82 +11,7 @@ const Record = ({ item, field, label}) => {
   );
 };
 
-export {
-  Record
-};
-
-export default class ItemDetails extends Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      item: null,
-      imageURL: null,
-      loading: true,
-      error: false
-    };
-
-    this.swapiService = new SwapiService();
-  }
-
-  onLoaded = (item, imageURL) => {
-    const { getImageURL } = this.props;
-
-    this.setState({
-      item,
-      imageURL: getImageURL(item),
-      loading: false,
-      error: false
-    });
-  };
-
-  onError = (err) => {
-    this.setState({
-      loading: false,
-      error: false
-    });
-  };
-
-  updateItem = () => {
-    this.setState({
-      loading: true,
-      error: false
-    });
-
-    const {
-      itemId,
-      getData
-    } = this.props;
-
-    if (!itemId) {
-      return;
-    }
-
-    getData(itemId)
-        .then(this.onLoaded)
-        .catch(this.onError);
-  };
-
-  componentDidMount() {
-    this.updateItem();
-  }
-
-  componentDidUpdate(prevProps) {
-    const { itemId } = this.props;
-
-    if (itemId !== prevProps.itemId) {
-      this.updateItem();
-    }
-  }
-
-  render() {
-    const {
-      item,
-      imageURL,
-      loading,
-      error
-    } = this.state;
+const ItemDetails = ({ item, imageURL, children }) => {
 
     if (!item) {
       return <span>Select item from list</span>;
@@ -98,20 +19,17 @@ export default class ItemDetails extends Component {
 
     return (
       <div className="item-details card">
-        {error ? <ErrorIndicator /> : loading ? <Spinner /> :
             <Card
                 item={item}
                 imageURL={imageURL}
             >
-              {React.Children.map(this.props.children, (child) => {
+              {React.Children.map(children, (child) => {
                   return React.cloneElement(child, { item });
                 })
               }
             </Card>
-        }
       </div>
     )
-  }
 }
 
 function Card ({ item, imageURL, children }) {
@@ -131,4 +49,10 @@ function Card ({ item, imageURL, children }) {
       </React.Fragment>
   );
 }
+
+export {
+    ItemDetails,
+    Record
+};
+
 
